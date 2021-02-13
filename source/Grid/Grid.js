@@ -586,6 +586,10 @@ class Grid extends React.PureComponent<Props, State> {
     }
   }
 
+  registerScrollListener = () => {
+    window.addEventListener('scroll', this._onScroll);
+  };
+
   componentDidMount() {
     const {
       getScrollbarSize,
@@ -598,6 +602,8 @@ class Grid extends React.PureComponent<Props, State> {
     } = this.props;
 
     const {instanceProps} = this.state;
+
+    this.registerScrollListener();
 
     // Reset initial offsets to be ignored in browser
     this._initialScrollTop = 0;
@@ -978,13 +984,13 @@ class Grid extends React.PureComponent<Props, State> {
       width,
     } = this.props;
     const {instanceProps, needToResetStyleCache} = this.state;
-
+    console.log('This is a CUSTTUM GRID');
     const isScrolling = this._isScrolling();
 
     const gridStyle: Object = {
       boxSizing: 'border-box',
       direction: 'ltr',
-      height: autoHeight ? 'auto' : height,
+      height: 'auto',
       position: 'relative',
       width: autoWidth ? 'auto' : width,
       WebkitOverflowScrolling: 'touch',
@@ -1638,8 +1644,14 @@ class Grid extends React.PureComponent<Props, State> {
     // In certain edge-cases React dispatches an onScroll event with an invalid target.scrollLeft / target.scrollTop.
     // This invalid event can be detected by comparing event.target to this component's scrollable DOM element.
     // See issue #404 for more information.
-    if (event.target === this._scrollingContainer) {
-      this.handleScrollEvent((event.target: any));
+    console.log(event);
+    console.log(`document = ${event.target === document}`);
+    console.log(`window = ${event.target === window}`);
+    if (
+      event.target === this._scrollingContainer ||
+      event.target === document
+    ) {
+      this.handleScrollEvent((event.target.scrollingElement: any));
     }
   };
 }
